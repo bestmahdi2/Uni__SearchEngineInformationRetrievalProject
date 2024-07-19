@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase2</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px; /* Adjusted max-width */
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2a2a2a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: calc(100% - 5px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #4a4a4a;
+            background-color: #2a2a2a;
+            color: #fff;
+            resize: none;
+            box-sizing: border-box;
+            direction: ltr;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        input[type="checkbox"] + label {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        input[type="checkbox"] + label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: #2a2a2a;
+            border: 2px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        input[type="checkbox"]:checked + label:before {
+            background-color: #4caf50;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 48%;
+            padding: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #536872;
+        }
+
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: #4a4a4a;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            position: relative;
+            z-index: 0;
+            width: 0;
+            height: 100%;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #4a4a4a;
+        }
+
+        .checkbox-container {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container label {
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="width: 95%">
+    <div class="button-container">
+        <button onclick="location.href='{% url 'Phase2:add_document_page' %}'"
+                style="height: 200px; font-size: 40px">Add Document
+        </button>
+        <button onclick="location.href='{% url 'Phase2:remove_document_page' %}'"
+                style="height: 200px; font-size: 40px">Remove Document
+        </button>
+    </div>
+    <div class="button-container">
+        <button onclick="location.href='{% url 'Phase2:index_construction_page' %}'"
+                style="height: 200px; font-size: 40px">Index Construction
+        </button>
+        <button onclick="location.href='{% url 'Phase2:index_compression_page' %}'"
+                style="height: 200px; font-size: 40px">Index Compression
+        </button>
+    </div>
+</div>
+</body>
+</html>

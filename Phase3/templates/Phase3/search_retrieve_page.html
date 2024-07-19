@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Document Type Declaration and Language -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase3</title>
+    <!-- Internal Styles -->
+    <style>
+        /* Styles for the body */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Styles for the main container */
+        .container {
+            width: 80%;
+            max-width: 800px; /* Adjusted max-width */
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2a2a2a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Styles for headings */
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Styles for labels */
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Styles for textareas */
+        textarea {
+            width: calc(100% - 5px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #4a4a4a;
+            background-color: #2a2a2a;
+            color: #fff;
+            resize: none;
+            box-sizing: border-box;
+            direction: ltr;
+        }
+
+        /* Styles for checkboxes */
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        /* Styles for labels associated with checkboxes */
+        input[type="checkbox"] + label {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Styles for unchecked checkboxes */
+        input[type="checkbox"] + label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: #2a2a2a;
+            border: 2px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        /* Styles for checked checkboxes */
+        input[type="checkbox"]:checked + label:before {
+            background-color: #4caf50;
+        }
+
+        /* Styles for buttons */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Styles for button hover state */
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Styles for disabled buttons */
+        button:disabled {
+            background-color: #536872;
+        }
+
+        /* Styles for the progress container */
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: #4a4a4a;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        /* Styles for the progress bar */
+        .progress-bar {
+            position: relative;
+            z-index: 0;
+            width: 0;
+            height: 100%;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            transition: width 0.3s ease;
+        }
+
+        /* Styles for the progress text */
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        /* Styles for labels within checkbox container */
+        .checkbox-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Additional styles for labels within checkbox container */
+        .checkbox-container label {
+            margin-right: 20px;
+        }
+
+        /* Additional styles for buttons within button container */
+        .button-container button {
+            flex: 1; /* Distribute space evenly */
+            margin-right: 5px; /* Add margin between buttons */
+        }
+
+        /* Text Input Styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #454545;
+            color: #fff;
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa; /* Placeholder color */
+        }
+
+        /* Two column layout for results */
+        .results-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .result {
+            flex: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container" style="width: 95%">
+    <form id="preprocess-form">
+        <!-- Directories Input Section -->
+        <h2>Search Document</h2>
+        <label for="inputQuery">Query:</label>
+        <input type="text" id="inputQuery" name="inputQuery" placeholder="Enter query here">
+    </form>
+
+    <!-- Preprocess Button and Progress Bar Section -->
+    <button id="process_start" type="button" disabled>Search</button>
+    <div id="progress-container" class="progress-container">
+        <div id="progress-text" class="progress-text"></div>
+        <div id="progress-bar" class="progress-bar"></div>
+    </div>
+
+    <!-- Results container -->
+    <div class="results-container">
+        <!-- Result section 1 -->
+        <div id="result-section1" class="result" style="display: none;">
+            <h2 id="text_result1">Ranked Results</h2>
+            <div id="result1" dir="auto"></div>
+        </div>
+
+        <!-- Result section 2 -->
+        <div id="result-section2" class="result" style="display: none;">
+            <h2 id="text_result2">Phrase Results</h2>
+            <div id="result2" dir="auto"></div>
+        </div>
+    </div>
+</div>
+
+<!-- External JavaScript Library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get necessary elements from the DOM
+        const progressContainer = document.getElementById('progress-container');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const processStartBtn = document.getElementById("process_start");
+        const inputQuery = document.getElementById("inputQuery");
+        const resultSection1 = document.getElementById('result-section1');
+        const resultSection2 = document.getElementById('result-section2');
+        const resultText1 = document.getElementById("result1");
+        const resultText2 = document.getElementById("result2");
+        const resultResult1 = document.getElementById("text_result1");
+        const resultResult2 = document.getElementById("text_result2");
+
+        // Function to update progress bar
+        function updateProgressBar() {
+            fetch("{% url 'Phase3:progress' %}")
+                .then(response => response.json())
+                .then(data => {
+                    progressBar.style.width = data.progress + '%';
+                    progressText.textContent = data.state + ' ' + data.progress + '%';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to validate text-inputs
+        function validateFields() {
+            const input = inputQuery.value.trim();
+
+            const submitButton = document.querySelector('button[type="button"]');
+            submitButton.disabled = !(input !== '');
+        }
+
+        function submitForm() {
+            // Call updateProgressBar function every second (you can adjust this interval)
+            let timer = setInterval(updateProgressBar, 1000);
+            let results_count;
+            let ranked_results_values;
+
+            let formData = new FormData();
+            // Add directory names to formData
+            formData.append("inputQuery", inputQuery.value);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "search_retrieve_api", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    clearInterval(timer);
+
+                    if (xhr.status === 200) {
+                        // Handle successful response here
+                        let jsonResponse = JSON.parse(xhr.responseText);
+                        progressContainer.style.backgroundColor = jsonResponse.status === 'success' ? '#4a4a4a' : 'white';
+                        progressText.style.color = jsonResponse.status === 'success' ? 'white' : 'red';
+
+                        if (jsonResponse.status === 'success') {
+                            let ranked_results_length = jsonResponse.ranked_results_length;
+                            let phrase_results_length = jsonResponse.phrase_results_length;
+                            let matching_terms_length = jsonResponse.matching_terms_length;
+
+                            let ranked_results_values = jsonResponse.ranked_results_values;
+                            let phrase_results_values = jsonResponse.phrase_results_values;
+                            let matching_terms_values = jsonResponse.matching_terms_values;
+
+                            resultResult1.style.display = 'none';
+                            resultResult2.style.display = 'none';
+                            resultText1.innerText = '';
+                            resultText2.innerText = '';
+
+                            if (!ranked_results_length && !phrase_results_length && !matching_terms_length) {
+                                resultSection1.style.display = 'block';
+                                resultResult1.style.display = 'block';
+                                // resultResult1.innerHTML = "Nothing were found!";
+                                resultText1.innerHTML = "Nothing were found!";
+                                $('.progress-container').css('display', 'none');
+                            } else {
+                                if (ranked_results_length) {
+                                    resultSection1.style.display = 'block';
+                                    resultResult1.style.display = 'block';
+
+                                    resultText1.innerHTML = ranked_results_values;
+                                    $('.progress-container').css('display', 'none');
+                                }
+                                if (matching_terms_length) {
+                                    resultSection2.style.display = 'block';
+                                    resultResult2.style.display = 'block';
+                                    resultResult2.innerHTML = "Searched For:";
+
+                                    resultText2.innerHTML = matching_terms_values;
+                                    $('.progress-container').css('display', 'none');
+                                }
+                                if (phrase_results_length) {
+                                    resultSection2.style.display = 'block';
+                                    resultResult2.style.display = 'block';
+                                    resultResult2.innerHTML = "Phrase Results"
+
+                                    resultText2.innerHTML = phrase_results_values;
+                                    $('.progress-container').css('display', 'none');
+                                }
+                            }
+                            // $('#progress-text').text(jsonResponse.message);
+                            // console.error('Error:', jsonResponse.message);
+                        } else
+                            updateProgressBar();
+
+                    } else {
+                        // Handle errors here
+                        console.error('Error:', xhr.status);
+                    }
+                }
+            };
+            $('.progress-container').css('display', 'block');
+            xhr.send(formData);
+        }
+
+        // Event listeners for button clicks and input changes
+        processStartBtn.addEventListener('click', submitForm);
+        inputQuery.addEventListener('input', validateFields);
+    });
+</script>
+</body>
+</html>

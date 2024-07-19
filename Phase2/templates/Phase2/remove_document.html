@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Document Type Declaration and Language -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase2</title>
+    <!-- Internal Styles -->
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container Styling */
+        .container {
+            width: 80%;
+            max-width: 800px; /* Adjusted max-width */
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2a2a2a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Heading Styling */
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Label Styling */
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Button Styling */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #536872;
+        }
+
+        /* Progress Container Styling */
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: #4a4a4a;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        /* Progress Bar Styling */
+        .progress-bar {
+            position: relative;
+            z-index: 0;
+            width: 0;
+            height: 100%;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            transition: width 0.3s ease;
+        }
+
+        /* Progress Text Styling */
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        /* Text Input Styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #454545;
+            color: #fff;
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa; /* Placeholder color */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="width: 95%">
+    <form id="preprocess-form">
+        <!-- Directories Input Section -->
+        <h2>Remove Document</h2>
+        <label for="inputDirPath">Document ID:</label>
+        <input type="text" id="inputDirPath" name="inputDirPath" placeholder="Enter document id here">
+    </form>
+
+    <!-- Preprocess Button and Progress Bar Section -->
+    <button id="process_start" type="button" disabled>Remove Document</button>
+    <div id="progress-container" class="progress-container">
+        <div id="progress-text" class="progress-text"></div>
+        <div id="progress-bar" class="progress-bar"></div>
+    </div>
+</div>
+
+<!-- External JavaScript Library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get necessary elements from the DOM
+        const progressContainer = document.getElementById('progress-container');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const processStartBtn = document.getElementById("process_start");
+        const inputDirPath = document.getElementById("inputDirPath");
+
+        // Function to update progress bar
+        function updateProgressBar() {
+            fetch("{% url 'Phase2:progress' %}")
+                .then(response => response.json())
+                .then(data => {
+                    progressBar.style.width = data.progress + '%';
+                    progressText.textContent = data.state + ' ' + data.progress + '%';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to validate text-input
+        function validateFields() {
+            const inputDir = inputDirPath.value.trim();
+
+            const submitButton = document.querySelector('button[type="button"]');
+            submitButton.disabled = !(inputDir !== '');
+        }
+
+        function submitForm() {
+            // Call updateProgressBar function every second (you can adjust this interval)
+            let timer = setInterval(updateProgressBar, 1000);
+
+            let formData = new FormData();
+            // Add directory names to formData
+            formData.append("inputDirPath", inputDirPath.value);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "remove_document_single_api", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    clearInterval(timer);
+
+                    if (xhr.status === 200) {
+                        // Handle successful response here
+                        let jsonResponse = JSON.parse(xhr.responseText);
+                        progressContainer.style.backgroundColor = jsonResponse.status === 'success' ? '#4a4a4a' : 'white';
+                        progressText.style.color = jsonResponse.status === 'success' ? 'white' : 'red';
+
+                        if (jsonResponse.status !== 'success') {
+                            $('#progress-text').text(jsonResponse.message);
+                            console.error('Error:', jsonResponse.message);
+                        } else
+                            updateProgressBar();
+
+                    } else {
+                        // Handle errors here
+                        console.error('Error:', xhr.status);
+                    }
+                }
+            };
+            $('.progress-container').css('display', 'block');
+            xhr.send(formData);
+        }
+
+        // Event listeners for button clicks and input changes
+        processStartBtn.addEventListener('click', submitForm);
+        inputDirPath.addEventListener('input', validateFields);
+    });
+</script>
+</body>
+</html>

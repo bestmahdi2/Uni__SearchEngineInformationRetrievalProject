@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase1</title>
+    <!-- Styling for the HTML document -->
+    <style>
+        /* Styles for the body */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Styles for the main container */
+        .container {
+            width: 80%;
+            max-width: 800px; /* Adjusted max-width */
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2a2a2a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Styles for wider container */
+        .wider {
+            width: 95%;
+        }
+
+        /* Styles for narrower container */
+        .narrower {
+            width: 15%;
+        }
+
+        /* Styles for headings */
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Styles for labels */
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Styles for textareas */
+        textarea {
+            width: calc(100% - 5px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #4a4a4a;
+            background-color: #2a2a2a;
+            color: #fff;
+            resize: none;
+            box-sizing: border-box;
+            direction: ltr;
+        }
+
+        /* Styles for checkboxes */
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        /* Styles for labels associated with checkboxes */
+        input[type="checkbox"] + label {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Styles for unchecked checkboxes */
+        input[type="checkbox"] + label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: #2a2a2a;
+            border: 2px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        /* Styles for checked checkboxes */
+        input[type="checkbox"]:checked + label:before {
+            background-color: #4caf50;
+        }
+
+        /* Styles for buttons */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Styles for button hover state */
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Styles for disabled buttons */
+        button:disabled {
+            background-color: #536872;
+        }
+
+        /* Styles for the progress container */
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: #4a4a4a;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        /* Styles for the progress bar */
+        .progress-bar {
+            position: relative;
+            z-index: 0;
+            width: 0;
+            height: 100%;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            transition: width 0.3s ease;
+        }
+
+        /* Styles for the progress text */
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        /* Styles for the result section */
+        #result-section {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #4a4a4a;
+            display: none;
+        }
+
+        /* Styles for the checkbox container */
+        .checkbox-container {
+            margin-bottom: 10px;
+        }
+
+        /* Styles for labels within checkbox container */
+        .checkbox-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Additional styles for labels within checkbox container */
+        .checkbox-container label {
+            margin-right: 20px;
+        }
+
+        /* Styles for button container */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px; /* Add margin between the buttons */
+        }
+
+        /* Additional styles for buttons within button container */
+        .button-container button {
+            flex: 1; /* Distribute space evenly */
+            margin-right: 5px; /* Add margin between buttons */
+        }
+    </style>
+</head>
+<body>
+<!-- Main container for the page content -->
+<div class="container wider">
+    <form id="preprocess-form">
+        <h2>Text Input</h2>
+        <!-- Textarea for inputting text -->
+        <label for="text">Please enter your text and choose a function:</label><textarea name="text" id="text" cols="30"
+                                                                                         rows="10"
+                                                                                         placeholder="Enter your text here..."
+                                                                                         dir="auto"></textarea>
+    </form>
+    <!-- Container for buttons -->
+    <div class="button-container">
+        <button id="process_start" type="button" disabled>Start Text Process</button>
+        <button id="process_next_step" type="button" style="display: none;">Next Step</button>
+    </div>
+    <!-- Progress container -->
+    <div class="progress-container">
+        <div id="progress-text" class="progress-text"></div>
+        <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <!-- Result section -->
+    <div id="result-section" style="display: none;">
+        <!-- Result Display -->
+        <h2 id="text_result">Text Result</h2>
+        <div id="result" dir="auto"></div>
+    </div>
+</div>
+<!-- Container for checkboxes -->
+<div class="container narrower">
+    <div class="checkbox-container">
+        <h2>Function</h2>
+        <!-- Checkboxes for various functions -->
+        <input type="checkbox" id="normalize" name="normalize">
+        <label for="normalize">Normalize</label>
+        <input type="checkbox" id="tokenize" name="tokenize">
+        <label for="tokenize">Tokenize</label>
+        <input type="checkbox" id="lemmatize" name="lemmatize">
+        <label for="lemmatize">Lemmatize</label>
+        <input type="checkbox" id="stem" name="stem">
+        <label for="stem">Stem</label>
+        <input type="checkbox" id="token_spacing" name="token_spacing">
+        <label for="token_spacing">Token Spacing</label>
+        <input type="checkbox" id="remove_stopwords" name="remove_stopwords">
+        <label for="remove_stopwords">Remove Stopwords</label>
+        <input type="checkbox" id="remove_punctuations" name="remove_punctuations">
+        <label for="remove_punctuations">Remove Punctuations</label>
+    </div>
+</div>
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- JavaScript section -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get necessary elements from the DOM
+        const lemmatizeCheckbox = document.getElementById("lemmatize");
+        const stemCheckbox = document.getElementById("stem");
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const resultSection = document.getElementById('result-section');
+        const resultText = document.getElementById("result");
+        const textResult = document.getElementById("text_result");
+        const text_element = document.getElementById("text");
+        const processStartBtn = document.getElementById("process_start");
+        const processNextStepBtn = document.getElementById("process_next_step");
+        const form = document.getElementById("preprocess-form");
+        let check_box_values = [];
+        let processed_values = {};
+        let processed_count = 0;
+        let showing_process_values = 0;
+        // Event listener for lemmatize checkbox
+        lemmatizeCheckbox.addEventListener('change', function () {
+            if (lemmatizeCheckbox.checked) {
+                stemCheckbox.checked = false;
+            }
+        });
+        // Event listener for stem checkbox
+        stemCheckbox.addEventListener('change', function () {
+            if (stemCheckbox.checked) {
+                lemmatizeCheckbox.checked = false;
+            }
+        });
+
+        // Function to update progress bar
+        function updateProgressBar() {
+            fetch("{% url 'Phase1:progress' %}")
+                .then(response => response.json())
+                .then(data => {
+                    progressBar.style.width = data.progress + '%';
+                    progressText.textContent = data.state + ' ' + data.progress + '%';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to submit the form
+        function submitForm() {
+            check_box_values = [];
+            processed_values = {};
+            processed_count = 0;
+            showing_process_values = 0;
+            processNextStepBtn.style.display = "none";
+            document.querySelector('button[type="button"]').disabled = true;
+            let timer = setInterval(updateProgressBar, 100);
+            let formData = new FormData(form);
+            Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).forEach(function (checkbox) {
+                formData.append(checkbox.name, checkbox.value);
+                check_box_values.push(checkbox.name);
+            });
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "preprocess_text", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    clearInterval(timer);
+                    if (xhr.status === 200) {
+                        let jsonResponse = JSON.parse(xhr.responseText);
+                        if (jsonResponse.status === 'success') {
+                            processed_count = jsonResponse.length;
+                            if (processed_count) {
+                                processed_values = jsonResponse.values;
+                                const title = check_box_values[showing_process_values];
+                                resultText.innerHTML = processed_values[title];
+                                textResult.innerHTML = "Text Results (" + title.replace("_", " ").toTitleCase() + ")";
+                                resultSection.style.display = 'block';
+                                $('.progress-container').css('display', 'none');
+                                if (processed_count > 1) {
+                                    processNextStepBtn.style.display = "block";
+                                    processNextStepBtn.disabled = false;
+                                }
+                            } else {
+                                resultText.innerText = '';
+                                resultSection.style.display = 'none';
+                            }
+                            updateProgressBar();
+                        } else {
+                            console.error('Error:', jsonResponse.status);
+                        }
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                    processStartBtn.innerHTML = "Start New Text Process";
+                    document.querySelector('button[type="button"]').disabled = false;
+                }
+            };
+            resultSection.style.display = 'none';
+            $('.progress-container').css('display', 'block');
+            xhr.send(formData);
+        }
+
+        // Function for next step in processing
+        function nextStep() {
+            showing_process_values += 1;
+            if (showing_process_values >= processed_count) {
+                showing_process_values = 0;
+            }
+            const title = check_box_values[showing_process_values];
+            textResult.innerHTML = "Text Results (" + title.replace("_", " ").toTitleCase() + ")";
+            resultText.innerHTML = processed_values[title];
+        }
+
+        // Function to validate form fields
+        function validateFields() {
+            const text = text_element.value.trim();
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            let checked = false;
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    checked = true;
+                }
+            });
+            const submitButton = document.querySelector('button[type="button"]');
+            submitButton.disabled = !(text !== '' && checked);
+        }
+
+        // Prototype function to convert string to title case
+        String.prototype.toTitleCase = function () {
+            return this.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        };
+        // Event listeners for button clicks and input changes
+        processStartBtn.addEventListener('click', submitForm);
+        processNextStepBtn.addEventListener('click', nextStep);
+        text_element.addEventListener('input', validateFields);
+        $('input[type="checkbox"]').change(function () {
+            validateFields();
+        });
+    });
+</script>
+</body>
+</html>
